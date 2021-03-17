@@ -29,17 +29,59 @@ d3.selectAll('body').on("change", updatePlotly(this.value));
 // This function is called when a dropdown menu item is selected
 function updatePlotly() {
 
+    d3.json("data/samples.json").then(sampleData => {
   // Initialize x and y arrays
-  var s_values_y = data.samples.map(d=>d.sample_values);
-  var o_ids_x = data.samples.map(d=>d.otu_ids);
-  var o_labels = data.samples.map(d=>d.otu_labels);
+        var s_values_y = data.samples.map(d=>d.sample_values);
+        var o_ids_x = data.samples.map(d=>d.otu_ids);
+        var o_labels = data.samples.map(d=>d.otu_labels);
 
-  var sorted_vals = s_values_y.sort().reverse()
-  var ten_vals = sorted_vals.map(s => s.slice(0,10))
+        var sorted_vals = s_values_y.sort().reverse();
+        var ten_vals = sorted_vals.map(s => s.slice(0,10));
 
-  // Note the extra brackets around 'x' and 'y'
-  Plotly.restyle("plot", "x", [x]);
-  Plotly.restyle("plot", "y", [y]);
+        var sorted_labels = o_labels.sort().reverse();
+        var ten_labels = sorted_labels.map(s => s.slice(0,10));
+
+        var sorted_ids = o_ids_x.sort().reverse();
+        var ten_ids = sorted_ids.map(s =>s.slice(0,10));
+
+        var metadata = sampleData.metadata;
+        var first_one = metadata[0];
+
+        // do i need this
+
+        var s_metadata = d3.select("#sample-metadata").selectAll('h1')
+    
+        var first_md = s_metadata.data(d3.entries(first_one))
+        first_md.enter()
+                        .append('h1')
+                        .merge(firstMetadata)
+                        .text(d => `${d.key} : ${d.value}`)
+                        .style('font-size','12px')
+      
+        firstMetadata.exit().remove()
+
+        //end section
+
+        //trace and layout for barchart
+        
+        var trace1 = {
+            x : topten[0],
+            y : top_id[0].map(x => "OTU" + x),
+            text : top_label[0],
+            type : 'bar',
+            orientation : 'h',
+            transforms: [{
+                type: 'sort',
+                target: 'y',
+                order: 'descending'
+            }]
+        };
+    
+        var layout1 = {
+            title : '<b>Top 10 OTU</b><br>Operational Taxonomic Units'
+        };
+    
+    }
 }
 
 init();
