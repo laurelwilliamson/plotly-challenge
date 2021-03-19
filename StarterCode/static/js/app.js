@@ -1,16 +1,4 @@
-// can we rename this function
 
-// function optionChanged(id) {
-//     makeDropdown();
-//     updatePlotly();
-//     updateDemographics();
-// }
-// Create a horizontal bar chart with a dropdown menu to display the top 10 OTUs found in that individual.
-// // select a sample and with the ID name, grab the otu_ids and sample_values
-// // id (name) and otu_ids ()
-// // otu_ids is the key, sample_values is the value
-// // otu_ids is the label, otu_labels is the tooltip
-// // Call updatePlotly() when a change takes place to the DOM
 function Dropdown(){
     d3.json("data/samples.json").then(sampleData => {
 
@@ -36,7 +24,7 @@ function optionChanged(name){
 }
 
 // This function is called when a dropdown menu item is selected
-function updatePlotly() {
+function updatePlotly(){
 
     d3.json("data/samples.json").then(sampleData => {
   // Initialize x and y arrays
@@ -112,7 +100,7 @@ function updatePlotly() {
         autosize: true,
         showlegend: false,
             margin: {
-                l: 155
+                l: 155,
                 r: 55,
                 b: 55,
                 t: 55,
@@ -123,7 +111,7 @@ function updatePlotly() {
 
     // Create bubble chart
     var data_b = [trace2];
-    Plotly.newPlot('bubble',data_b,layout2,responsiveness2);
+    Plotly.newPlot('bubble', data_b,layout2,responsiveness2);
     
     };
 };
