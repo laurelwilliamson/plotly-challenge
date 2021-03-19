@@ -14,7 +14,7 @@ function Dropdown(){
         });
 
     });
-};
+}
 
 
 d3.selectAll('body').on("change", updatePlotly(this.value));
@@ -27,7 +27,10 @@ function optionChanged(name){
 function updatePlotly(){
 
     d3.json("data/samples.json").then(sampleData => {
-  // Initialize x and y arrays
+        
+        var data = sampleData;
+        var names = data.names;
+        // Initialize x and y arrays
         var s_values_y = data.samples.map(d=>d.sample_values);
         var o_ids_x = data.samples.map(d=>d.otu_ids);
         var o_labels = data.samples.map(d=>d.otu_labels);
@@ -46,16 +49,16 @@ function updatePlotly(){
 
         // do i need this
 
-        var s_metadata = d3.select("#sample-metadata").selectAll('h1')
+        var s_metadata = d3.select("#sample-metadata").selectAll('h1');
     
-        var first_md = s_metadata.data(d3.entries(first_one))
+        var first_md = s_metadata.data(d3.entries(first_one));
         first_md.enter()
                         .append('h1')
-                        .merge(firstMetadata)
+                        .merge(first_md)
                         .text(d => `${d.key} : ${d.value}`)
-                        .style('font-size','12px')
+                        .style('font-size','12px');
       
-        firstMetadata.exit().remove()
+        first_md.exit().remove();
 
         //end section
 
@@ -64,7 +67,7 @@ function updatePlotly(){
         var trace1 = {
             x : ten_vals[0],
             y : ten_ids[0].map(x => "OTU" + x),
-            text : top_label[0],
+            text : ten_labels[0],
             type : 'bar',
             orientation : 'h',
             transforms: [{
@@ -79,7 +82,7 @@ function updatePlotly(){
         };
 // what happens when we take out responsiveness part 
         var data = [trace1];
-        var responsiveness = {responsive:true}
+        var responsiveness = {responsive:true};
         Plotly.newPlot('bar', data, layout1, responsiveness);
 
          // Bubble Chart
@@ -107,19 +110,19 @@ function updatePlotly(){
                 pad: 4.5
               }
     };
-    var responsiveness2 = {responsive:true}
+    var responsiveness2 = {responsive:true};
 
     // Create bubble chart
     var data_b = [trace2];
     Plotly.newPlot('bubble', data_b,layout2,responsiveness2);
     
-    };
-};
+    });
+}
 
 function init(){
     Dropdown();
     
-};
+}
 
 init();
 
