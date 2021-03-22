@@ -1,31 +1,43 @@
-
-function Dropdown(){
-    d3.json("data/samples.json").then(sampleData => {
-
-        //data, names, dropdown menu
-        var data = sampleData;
-        var names = data.names;
-        var dropdownMenu = d3.select('#selDataset');
-    
-        names.forEach(name => {
-            var option = dropdownMenu.append('option');
-            option.attr('value',name);
-            option.text(name);
+function init() {  
+    // dropdown
+      var selector = d3.select("#selDataset");
+ // populate options
+  d3.json("data/samples.json").then((data) => {
+        var sampleNames = data.names;
+        sampleNames.forEach((sample) => {selector
+            .append("option")        
+            .text(sample)        
+            .property("value", sample); 
+           });
+   // get first sample
+    var firstSample = sampleNames[0];
+    buildCharts(firstSample);
+    buildMetadata(firstSample);  });}
+// Initializing
+function optionChanged(newSample) { 
+     //new data 
+    buildMetadata(newSample);  
+    buildCharts(newSample);  }
+// Demographics Panel 
+function buildMetadata(sample) {  
+    d3.json("data/samples.json").then((data) => {    
+        var metadata = data.metadata;    // Filter the data for the object with the desired sample number    
+        var resultArray = metadata.filter(sampleObj => sampleObj.id == sample);    
+        var result = resultArray[0];       // Use d3 to select the panel with id of #sample-metadata    
+        var PANEL = d3.select("#sample-metadata");
+   // Use `.html("") to clear any existing metadata    
+        PANEL.html("");
+   // Use Object.entries to add each key and value pair to the panel      
+        Object.entries(result).forEach(([key, value]) => {PANEL
+            .append("h6")
+            .text(`${key.toUpperCase()}: ${value}`);    
         });
-
-    });
+    });
 }
 
-
-d3.selectAll('body').on("change", updatePlotly(this.value));
-
-function optionChanged(name){
-    updatePlotly();
-}
-
-// This function is called when a dropdown menu item is selected
-function updatePlotly(){
-
+// Create the buildChart function.
+function buildCharts(sample) {  
+    // Use d3.json to load the samples.json file   
     d3.json("data/samples.json").then(sampleData => {
         
         var data = sampleData;
@@ -46,21 +58,9 @@ function updatePlotly(){
 
         var metadata = sampleData.metadata;
         var first_one = metadata[0];
-
-        // do i need this
-
-        var s_metadata = d3.select("#sample-metadata").selectAll('h1');
-    
-        var first_md = s_metadata.data(d3.entries(first_one));
-        first_md.enter()
-                        .append('h1')
-                        .merge(first_md)
-                        .text(d => `${d.key} : ${d.value}`)
-                        .style('font-size','12px');
-      
-        first_md.exit().remove();
-
-        //end section
+        var BUBBLE = d3.select("#bubble");
+        var BAR = d3.select("#bar");
+        
 
         //Bar chart
         
@@ -80,7 +80,8 @@ function updatePlotly(){
         var layout1 = {
             title : '<b>OTU Frequency</b>'
         };
-// what happens when we take out responsiveness part 
+
+
         var data = [trace1];
         var responsiveness = {responsive:true};
         Plotly.newPlot('bar', data, layout1, responsiveness);
@@ -119,62 +120,4 @@ function updatePlotly(){
     });
 }
 
-function init(){
-    Dropdown();
-    
-}
-
 init();
-
-// function updateDemographics(id) {
-//     d3.json("samples.json").then((data) => {
-
-//         var md_samples = data.metadata.filter(x => x.id === +id)[0];
-
-//         var sample_metadata = d3.select("#sample-metadata").selectAll('h1')
-//         var s_md= sample_metadata.data(d3.entries(md_samples))
-//         s_md.enter().append('h1').merge(s_md).text(d => `${d.key} : ${d.value}`).style('font-size','14px');
-
-//     };
-// };
-
-   
-
-
-
-
-// Use sample_values as the values for the bar chart.
-
-
-// Use otu_ids as the labels for the bar chart.
-
-
-// Use otu_labels as the hovertext for the chart.
-
-// Create a bubble chart that displays each sample.
-
-
-
-// Use otu_ids for the x values.
-
-
-// Use sample_values for the y values.
-
-
-// Use sample_values for the marker size.
-
-
-// Use otu_ids for the marker colors.
-
-
-// Use otu_labels for the text values.
-
-// Display the sample metadata, i.e., an individual's demographic information.
-
-
-// Display each key-value pair from the metadata JSON object somewhere on the page.
-
-// Update all of the plots any time that a new sample is selected.
-
-// Additionally, you are welcome to create any layout that you would like for your dashboard. An example dashboard is shown below:
-
